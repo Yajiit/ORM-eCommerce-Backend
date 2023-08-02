@@ -32,19 +32,32 @@ router.get('/:id', async (req, res) => {
     res.status(500).json(err);
   }
 });
-
+// ROUTE TO CREATE TAG
 router.post('/', async (req, res) => {
   try {
     const newTag = await Tag.create(req.body);
   // create a new tag    
-    res.status(200).json(newTag);
+    res.status(200).json({ message: 'Tag successfully created!', tag: newTag });
   } catch (err) {
     res.status(400).json(err);
   }
 });
-
-router.put('/:id', (req, res) => {
+// ROUTE TO UPDATE TAG
+router.put('/:id', async (req, res) => {
+  try {
   // update a tag's name by its `id` value
+    const updatedTag = await Tag.update(req.body, {
+      where: { id: req.params.id },
+    });
+    if (updatedTag[0] === 0) {
+      res.status(404).json({ message: 'Tag not found or no changes made.' });
+      return;
+    }
+
+    res.status(200).json({ message: 'Tag updated successfully.', tag: updatedTag });
+  } catch (err) {
+    res.status(400).json(err);
+  }
 });
 
 router.delete('/:id', (req, res) => {
