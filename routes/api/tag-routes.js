@@ -54,14 +54,27 @@ router.put('/:id', async (req, res) => {
       return;
     }
 
-    res.status(200).json({ message: 'Tag updated successfully.', tag: updatedTag });
+    res.status(200).json({ message: 'Tag updated successfully.'});
   } catch (err) {
     res.status(400).json(err);
   }
 });
-
-router.delete('/:id', (req, res) => {
+// ROUTE TO DELETE TAG
+router.delete('/:id', async (req, res) => {
+  try {
   // delete on tag by its `id` value
+    const deletedTag = await Tag.destroy({
+      where: { id: req.params.id },
+    });
+    if (deletedTag === 0) {
+      res.status(404).json({ message: 'Tag not found.' });
+      return;
+    }
+
+    res.status(200).json({ message: 'TAG DELETED.' });
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 module.exports = router;
