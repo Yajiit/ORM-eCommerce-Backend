@@ -34,12 +34,18 @@ router.get('/:id', async (req, res) => {
 });
 // ROUTE TO CREATE TAG
 router.post('/', async (req, res) => {
+  
   try {
+    // check if the required tag_name is provided and it's a string
+    if (!req.body.tag_name || typeof req.body.tag_name !== 'string') {
+      res.status(400).json({ message: 'Invalid tag name provided.' });
+      return;
+    }
     const newTag = await Tag.create(req.body);
-  // create a new tag    
+  // create a new tag
     res.status(200).json({ message: 'Tag successfully created!', tag: newTag });
   } catch (err) {
-    res.status(400).json(err);
+    res.status(400).json({ message: 'Failed to create tag.', error: err.message });
   }
 });
 // ROUTE TO UPDATE TAG

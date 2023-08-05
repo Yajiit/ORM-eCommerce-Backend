@@ -36,11 +36,16 @@ router.get('/:id', async (req, res) => {
 // ROUTE TO CREATE NEW CATEGORY
 router.post('/', async (req, res) => {
   try {
+    // Check if the required category_name is provided and it's a string
+    if (!req.body.category_name || typeof req.body.category_name !== 'string') {
+      res.status(400).json({ message: 'Invalid category name provided.' });
+      return;
+    }
   // create a new category    
     const newCategory = await Category.create(req.body);
     res.status(200).json({ message: 'Category successfully created!', category: newCategory });
   } catch (err) {
-    res.status(400).json(err);
+    res.status(400).json({ message: 'Failed to create category.', error: err.message });
   }
 });
 // ROUTE TO UPDATE CATEGORY
